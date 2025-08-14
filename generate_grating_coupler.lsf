@@ -201,7 +201,7 @@ set("mode selection", "fundamental TE mode");
 # =============================================================================
 
 # Far-field monitor for radiation pattern
-addfarfield2d;
+addfarfield;
 set("name", "farfield_monitor");
 set("monitor type", "2D Z-normal");
 set("x", 0);
