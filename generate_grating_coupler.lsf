@@ -22,8 +22,11 @@ etch_depth = 70e-9;          # Grating etch depth [m]
 box_thickness = 2e-6;        # Buried oxide thickness [m]
 pml_thickness = 0.5e-6;      # PML boundary thickness [m]
 
-# Simulation domain
-sim_x_span = 20e-6;          # X span [m]
+# Simulation domain - Extended to accommodate full grating length
+# Domain now extends from -10μm to +20μm (30μm total span)
+# Gratings extend from 0.1μm to 16.73μm, so they fit with margin
+sim_x_span = 30e-6;          # X span [m] - Extended from 20e-6 to 30e-6
+sim_x_center = 5e-6;         # X center [m] - Centers domain at 5μm (range: -10μm to +20μm)
 sim_y_span = 3e-6;           # Y span [m] 
 sim_z_span = 8e-6;           # Z span [m]
 
@@ -69,7 +72,7 @@ if(fileexists(filename)) {
 # Add FDTD simulation region
 addfdtd;
 set("dimension", "3D");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span);
 set("y", 0);
 set("y span", sim_y_span);
@@ -96,7 +99,7 @@ set("auto shutoff min", 1e-5);
 # Silicon substrate (not needed for SOI, but good reference)
 addrect;
 set("name", "substrate");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span);
 set("y", 0);
 set("y span", sim_y_span);
@@ -107,7 +110,7 @@ set("material", "Si (Silicon) - Palik");
 # Buried oxide layer
 addrect;
 set("name", "buried_oxide");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span);
 set("y", 0);
 set("y span", sim_y_span);
@@ -118,7 +121,7 @@ set("material", "SiO2 (Glass) - Palik");
 # Silicon slab (unetched)
 addrect;
 set("name", "silicon_slab");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span);
 set("y", 0);
 set("y span", sim_y_span);
@@ -129,7 +132,7 @@ set("material", "Si (Silicon) - Palik");
 # Top cladding (SiO2)
 addrect;
 set("name", "top_cladding");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span);
 set("y", 0);
 set("y span", sim_y_span);
@@ -183,7 +186,7 @@ addmode;
 set("name", "waveguide_source");
 set("injection axis", "x-axis");
 set("direction", "forward");
-set("x", -sim_x_span/2 + 2e-6);     # Position near left boundary
+set("x", sim_x_center - sim_x_span/2 + 2e-6);     # Position near left boundary
 set("y", 0);
 set("y span", 2e-6);                # Span covers waveguide width
 set("z", si_thickness/2);           # Center in silicon slab
@@ -204,7 +207,7 @@ set("mode selection", "fundamental TE mode");
 addpower;
 set("name", "farfield_monitor");
 set("monitor type", "2D Z-normal");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span - 2e-6);
 set("y", 0);
 set("y span", sim_y_span - 2e-6);
@@ -217,7 +220,7 @@ set("output Pz", true);
 addpower;
 set("name", "grating_surface");
 set("monitor type", "2D Z-normal");
-set("x", 0);
+set("x", sim_x_center);
 set("x span", sim_x_span - 2e-6);
 set("y", 0);
 set("y span", sim_y_span - 2e-6);
@@ -227,7 +230,7 @@ set("z", si_thickness);             # At top of silicon slab
 addpower;
 set("name", "transmission");
 set("monitor type", "2D X-normal");
-set("x", sim_x_span/2 - 1e-6);      # Near right boundary
+set("x", sim_x_center + sim_x_span/2 - 1e-6);      # Near right boundary
 set("y", 0);
 set("y span", 2e-6);
 set("z", si_thickness/2);
@@ -270,6 +273,7 @@ set("dz", 10e-9);                    # 10 nm in z direction
 ?" - Etch depth: " + num2str(etch_depth*1e9) + " nm";
 ?" - Number of trenches: " + num2str(num_trenches);
 ?" - Grating length: " + num2str((positions_m(num_trenches) - positions_m(1))*1e6) + " μm";
+?" - X domain: " + num2str((sim_x_center - sim_x_span/2)*1e6) + " to " + num2str((sim_x_center + sim_x_span/2)*1e6) + " μm";
 ?"";
 ?"To run simulation:";
 ?" 1. Review setup in Layout view";
