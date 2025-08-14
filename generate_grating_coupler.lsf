@@ -149,7 +149,7 @@ for(i=1:num_trenches) {
     
     # Get parameters for current trench
     pos = positions_m(i);
-    length = etch_lengths_m(i);
+    etch_length = etch_lengths_m(i);
     depth = depths_m(i);
     
     # Create trench as a rectangle that subtracts from silicon
@@ -157,8 +157,8 @@ for(i=1:num_trenches) {
     set("name", "trench_" + num2str(i));
     
     # Position the trench
-    set("x", pos + length/2);        # Center at position + half length
-    set("x span", length);           # Width = etch length
+    set("x", pos + etch_length/2);        # Center at position + half length
+    set("x span", etch_length);           # Width = etch length
     set("y", 0);                     # Centered in Y
     set("y span", sim_y_span);       # Full width in Y direction
     set("z", si_thickness - depth/2); # Top surface minus half depth
