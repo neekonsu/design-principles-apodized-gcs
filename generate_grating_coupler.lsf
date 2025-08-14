@@ -201,7 +201,7 @@ set("mode selection", "fundamental TE mode");
 # =============================================================================
 
 # Far-field monitor for radiation pattern
-addfarfield;
+addpower;
 set("name", "farfield_monitor");
 set("monitor type", "2D Z-normal");
 set("x", 0);
@@ -209,6 +209,9 @@ set("x span", sim_x_span - 2e-6);
 set("y", 0);
 set("y span", sim_y_span - 2e-6);
 set("z", si_thickness + 1e-6);      # Above the grating
+set("output Px", true);
+set("output Py", true);
+set("output Pz", true);
 
 # Field monitor at grating surface
 addpower;
